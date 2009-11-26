@@ -1,0 +1,4 @@
+nwsExample      examples of using NetWorkSpaces
+sleighExample   examples of using Sleigh
+mandelbrot      compute mandelbrot set using Sleigh
+pportfolio      parallel portfolio optimization

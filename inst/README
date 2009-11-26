@@ -1,0 +1,138 @@
+NetWorkSpaces for R
+---------------------
+NetWorkSpaces (NWS) is a powerful, easy-to-use software package that
+makes it easy to write parallel R programs.  It allows you to easily
+launch a set of worker processes on a specified list of machines, and
+then submit tasks to those workers.  For many programs, that is all you
+need, but for more sophisticated programs, you can take advantage of the
+powerful communication layer to directly communicate and coordinate
+between the master and worker processes.
+
+
+Requirements
+-------------
+R 2.1.1 or later (http://www.r-project.org)
+Twisted Framework (http://www.twistedmatrix.com)
+Python 2.2 or later (http://www.python.org)
+
+Note: Twisted and Python are only needed for installing and running the
+NWS server, which only needs to run on one machine on your network.
+
+
+NetWorkSpaces Server
+---------------------
+To use the R nws package, you'll need to install and run an NWS server
+on some machine on your network.  The NWS server is an open-source
+program implemented in Python using the Twisted networking framework.
+It is packaged separately from the nws package.  To download a copy of
+the NWS server, please visit 'NetWorkSpaces for R' project website:
+
+    http://nws-r.sourceforge.net
+
+The NWS server only needs to be installed and run on one machine, while
+the nws package may be installed on any number of machines on your
+network.
+
+
+NetWorkSpaces for R
+---------------------
+The simplest way to install the nws package is via the R
+"install.packages" function, or to use a similar menu item if using a
+graphical user interface to R.  This will download the latest version of
+nws from CRAN and install it in your R installation.
+
+On Unix systems, it is common to install the source distribution after
+downloading it from sourceforge or one of the CRAN mirror sites.
+In that case, you can either install nws as root or as a normal user.
+If installing as root, execute the command:
+
+    # R CMD INSTALL nws_2.0.0.x.tar.gz
+
+Now every user on that machine will be able to load the nws package
+without any further configuration.
+
+If you can't (or don't want to) install nws as root, you need to choose
+a directory to install it into first, and then use the "-l" option of
+the "R CMD INSTALL" command to specify that directory.  You can install
+many packages into that directory, which R calls a "library" (see
+chapter 6 of the "R Installation and Administration" manual for more
+information).
+
+For example, say you want to install nws into a directory named
+"R-packages" under your home directory.  First, create the directory
+(if it doesn't exist), and then execute the command:
+
+    % R CMD INSTALL -l $HOME/R-packages nws_2.0.0.x.tar.gz
+
+This installs the nws package into the library $HOME/R-packages.
+
+If you've installed nws into a private library, you'll need to tell R
+where to find your library (or libraries).  One way to do that is with
+the R_LIB environment variable.  For the above example, we would set it
+as follows:
+
+    % R_LIBS=$HOME/R-packages
+    % export R_LIBS
+
+or for a csh-compatible shell:
+
+    % setenv R_LIBS $HOME/R-packages
+
+Other libraries can be included by separating the path of each library
+by a colon.
+
+You'll probably want to do this in your shell's startup file, such as
+$HOME/.bashrc, $HOME/.zshenv, or $HOME/.tcshrc, otherwise you'll have to
+set it every time you start a new shell.
+
+Once you're got nws installed and a NWS server up and running, you're
+ready to use NetWorkSpaces.  You can do a simple test to make sure
+everything is installed properly by typing the following:
+
+    % R -q
+    > library(nws)
+    > ws = netWorkSpace("R space")
+    > nwsStore(ws, "x", 1)
+    > nwsFetch(ws, "x")
+    [1] 1
+
+This creates a workspace called "R space", stores an integer 1 into the
+variable "x", and fetches the 1 back from "x".
+
+Note that if the NWS server isn't running on the local machine, you'll
+need to specify the appropriate machine name as the second argument to
+the netWorkSpace function:
+
+    > ws = netWorkSpace("R space", "server_hostname")
+
+Another possible problem is not setting R_LIBS correctly if you have a
+private nws installation.
+
+You can view the content of your workspaces using the NWS server's web
+interface.  To do this, point your browser to:
+
+    http://server_hostname:8766
+    
+where server_hostname is the machine where the NWS server is running.
+
+In order to examine values that you've created in a workspace using the
+server's web interface, you'll need a babelfish.  The babelfish
+translates values into a human readable format so they can be displayed
+in a web browser.  If a value is a string, then the web interface simply
+displays the contents of the string, without any help from the
+babelfish.  But, if the the value is any other type of R object, it
+needs help from the R babelfish, which is located in the nws/bin
+directory.  To execute the babelfish, use a command such as:
+
+    % R CMD BATCH babelfish.R
+or:
+    % R --vanilla --slave < babelfish.R
+
+Note: the babelfish will not exit until the server shuts down, or you
+manually interrupt or kill the process.
+
+More examples on using NetWorkSpaces are available in the examples and
+demo directory in the nws package's directory.
+
+For further help, please visit us at http://nws-r.sourceforge.net, or
+send email to nws-support@lindaspaces.com.
