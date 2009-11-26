@@ -63,20 +63,6 @@ launch <- function(nwsName, nwsHost, nwsPort, rank=-1, maxWorkerCount=-1,
 
   # XXX only do this with a sleigh workspace?
   nwsStore(nws, 'worker_ids', as.character(rank))
-
-  # Figure out if this Revo R, if so numThreads
-  if(require(Revobase,quiet=TRUE)) {
-    tryCatch({
-      numCores <- getMKLthreads()
-      numThreads <- floor(numCores/numProcs) +
-        if((numCores %% numProcs) > rank) 1 else 0
-      setMKLthreads(max(numThreads,1))
-    }, error=function(e) {
-      warning('Revobase appears to exist, but cannot set MKL thread count.',
-              call.=FALSE)
-      print(e)
-    })
-  }
   
   # enter the main worker loop
   workerLoop(nws, displayName, rank, maxWorkerCount, verbose, userNws, rngType,
