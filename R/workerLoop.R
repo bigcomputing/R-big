@@ -205,7 +205,9 @@ workerLoop <- function(nws, displayName, rank, workerCount, verbose, userNws, rn
       })
     }
 
-    tm <- system.time(value <- lapply(seq(arg), dotask))
+    tm <- proc.time()
+    value <- lapply(seq(arg), dotask)
+    tm <- proc.time() - tm
 
     if (verbose)
       logDebug(sprintf("Task %s completed", t$tag))
