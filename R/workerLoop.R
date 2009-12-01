@@ -168,9 +168,7 @@ workerLoop <- function(nws, displayName, rank, workerCount, verbose, userNws, rn
       })
     }
 
-    tm <- proc.time()
     value <- lapply(seq(arg), dotask)
-    tm <- proc.time() - tm
 
     if (verbose)
       logDebug(sprintf("Task %s completed", t$tag))
@@ -178,7 +176,7 @@ workerLoop <- function(nws, displayName, rank, workerCount, verbose, userNws, rn
     # send back the task results
     tryCatch({
       nwsStore(nws, 'result', list(type='VALUE', value=value, tag=t$tag,
-               job=t$job, resubmitted=t$resubmitted, time=tm, rank=rank))
+               job=t$job, resubmitted=t$resubmitted, rank=rank))
     },
     error=function(e) {
       # try to store the error object in case the failure was due to
@@ -186,7 +184,7 @@ workerLoop <- function(nws, displayName, rank, workerCount, verbose, userNws, rn
       # has been deleted, or the server has crashed.
       logError(sprintf('Error returning result: %s', as.character(e)))
       nwsStore(nws, 'result', list(type='VALUE', value=e, tag=t$tag,
-               job=t$job, resubmitted=t$resubmitted, time=tm, rank=rank))
+               job=t$job, resubmitted=t$resubmitted, rank=rank))
     })
 
     if (t$barrier) {
