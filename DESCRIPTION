@@ -10,6 +10,7 @@ Description: Provides coordination and parallel execution
         using the netWorkSpaces server developed by REvolution
         Computing
 License: GPL-2
+Suggests: rsprng
 Depends: R (>= 2.5), methods, utils
 LazyLoad: yes
 

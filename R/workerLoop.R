@@ -98,8 +98,8 @@ workerLoop <- function(nws, displayName, rank, workerCount, verbose, userNws, rn
       set.seed(seedval)
     }
     else if(substr(rngType,1,5) == 'sprng') {
-      if (require(Rsprng, quietly=TRUE)) {
-        logDebug('using Rsprng for random number generation')
+      if (require(rsprng, quietly=TRUE)) {
+        logDebug('using rsprng for random number generation')
         if(rngType == 'sprngLFG') gtype <- 0
         else if(rngType == 'sprngLCG') gtype <- 1
         else if(rngType == 'sprngLCG64') gtype <- 2
