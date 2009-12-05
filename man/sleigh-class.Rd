@@ -86,7 +86,7 @@ Default is \code{'sleigh_ride_\%010d'}.}
 \item{\code{rngType}:}{a string indicating the type of random number
   generator to initialize the workers with.  Defaults to
   \code{'legacy'}, which does a limited initialization.  If the
-  \code{sprngNWS} package is available, the following options are
+  \code{rsprng} package is available, the following options are
   available:
   \describe{
   \item{'sprngLFG':}{Modified Lagged Fibonacci Generator}
