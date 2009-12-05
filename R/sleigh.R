@@ -20,7 +20,8 @@
 # We use alternating barriers to synchronize eachWorker
 # invocations. Their names are common to workers and sleighs.
 barrierNames <- list('barrier0', 'barrier1')
-RNG.TYPES.AVAILIBLE <- c('legacy')
+RNG.TYPES.AVAILIBLE <- c('legacy','sprngLFG','sprngLCG','sprngLCG64',
+                         'sprngCMRG', 'sprngMLFG')
 # heuristic test for a closure
 isClosure <- function(fun) {
   if (is.function(fun)) {
