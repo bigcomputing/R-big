@@ -98,8 +98,8 @@ workerLoop <- function(nws, displayName, rank, workerCount, verbose, userNws, rn
       set.seed(seedval)
     }
     else if(substr(rngType,1,5) == 'sprng') {
-      if (require(sprngNWS, quietly=TRUE)) {
-        logDebug('using sprngNWS for random number generation')
+      if (require(Rsprng, quietly=TRUE)) {
+        logDebug('using Rsprng for random number generation')
         if(rngType == 'sprngLFG') gtype <- 0
         else if(rngType == 'sprngLCG') gtype <- 1
         else if(rngType == 'sprngLCG64') gtype <- 2
@@ -114,16 +114,16 @@ workerLoop <- function(nws, displayName, rank, workerCount, verbose, userNws, rn
         seed <- as.numeric(rngSeed)   # XXX should be parameterizable
         param <- 0  # XXX (probably) should be parameterizable
         tryCatch({
-          init.nwssprng(gtype, streamno, nstream, seed, param)
+          init.sprng(gtype, streamno, nstream, seed, param)
         },
         error=function(e) {
-          logError(sprintf('Error calling init_nwssprng: %s - shutting down',
+          logError(sprintf('Error calling init.sprng: %s - shutting down',
                            as.character(e)))
           loadedRNG <- F
         })
       }
       else {
-        logError(sprintf('ERROR: sprngNWS not availible - shutting down'))
+        logError(sprintf('ERROR: init.sprng not availible - shutting down'))
         loadedRNG <- F
       }
     }
