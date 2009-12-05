@@ -92,8 +92,45 @@ workerLoop <- function(nws, displayName, rank, workerCount, verbose, userNws, rn
                 assign.env=globalenv())
   # initialize for random number generation
   setRNGSeed <- function(rngType, rngSeed) {
-    seedval <- (as.integer(rank) + as.numeric(rngSeed))
-    set.seed(seedval)
+    if(rngType == 'legacy') {
+      logDebug('using legacy random number generation')
+      seedval <- (as.integer(rank) + as.numeric(rngSeed))
+      set.seed(seedval)
+    }
+    else if(substr(rngType,1,5) == 'sprng') {
+      if (require(sprngNWS, quietly=TRUE)) {
+        logDebug('using sprngNWS for random number generation')
+        if(rngType == 'sprngLFG') gtype <- 0
+        else if(rngType == 'sprngLCG') gtype <- 1
+        else if(rngType == 'sprngLCG64') gtype <- 2
+        else if(rngType == 'sprngCMRG') gtype <- 3
+        else if(rngType == 'sprngMLFG') gtype <- 4
+        else {
+          logError(sprintf('ERROR: This sprng generator type is not supported - shutting down'))
+          loadedRNG <- F
+        }
+        streamno <- rank
+        nstream <- workerCount
+        seed <- as.numeric(rngSeed)   # XXX should be parameterizable
+        param <- 0  # XXX (probably) should be parameterizable
+        tryCatch({
+          init.nwssprng(gtype, streamno, nstream, seed, param)
+        },
+        error=function(e) {
+          logError(sprintf('Error calling init_nwssprng: %s - shutting down',
+                           as.character(e)))
+          loadedRNG <- F
+        })
+      }
+      else {
+        logError(sprintf('ERROR: sprngNWS not availible - shutting down'))
+        loadedRNG <- F
+      }
+    }
+    else {
+      logError(sprintf('ERROR: this rngType is not supported'))
+      loadedRNG <- F
+    }
   }
 
   setRNGSeed(rngType, rngSeed)
