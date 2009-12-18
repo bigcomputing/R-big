@@ -1,0 +1,16 @@
+Package: Rbig
+Title: R functions for NetWorkSpaces and Sleigh
+Version: 2.0.0.3
+Author: REvolution Computing
+        with support and contributions from Pfizer, Inc.
+	and contributions from Patrick Shields and Steve Weston
+Maintainer: Steve Weston <steve@bigcomputing.com>
+Description: Provides coordination and parallel execution
+        facilities, as well as limited cross-language data exchange,
+        using the netWorkSpaces server developed by REvolution
+        Computing
+License: GPL-2
+Suggests: rsprng
+Depends: R (>= 2.5), methods, utils
+LazyLoad: yes
+

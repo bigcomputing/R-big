@@ -1,0 +1,119 @@
+Sleigh for R
+------------
+Sleigh is an R class, included in the nws package, that makes it very
+easy to write simple parallel programs.  Sleigh uses the master/worker
+paradigm.  The master submits tasks to the workers, who may or may not
+be on the same machine as the master.  To enable the master to
+communicate with workers, Sleigh supports several mechanisms for
+launching the workers.
+
+Note: This file assumes that you have read the README file for
+NetWorkSpaces and have installed the NWS server and nws package
+accordingly.
+
+
+Local Launch Mechanism
+----------------------
+The local launch is the default mechanism for starting the workers.  If
+no arguments are specified to the sleigh function, three worker
+processes on local machine will be started.  The "workerCount" argument
+can be used to specify a different number of workers.  This is useful
+for SMP machine, where multiple cores/processors are available.  Local
+launch is also useful when developing programs before deploying them to
+a cluster, for example.
+
+
+SSH Launch Mechanism
+--------------------
+To start up workers on different machines, a remote execution mechanism,
+such as ssh, is needed.  Remote machines need to be running an ssh
+server in order to be used as workers, and they need to be set up for
+password-less execution.
+
+In order to enable password-less execution, you need to generate public
+and private keys on the master machine.  Here's one way to do that:
+
+    % ssh-keygen -t rsa
+
+The public key file, id_rsa.pub, needs to be appended to the
+~/.ssh/authorized_keys file of each machine that you plan to use as a
+worker.  To do that for the local machine, execute the commands:
+
+    % cd ~/.ssh
+    % cat id_rsa.pub >> authorized_keys
+
+For other sleigh worker machines, you'll have to copy the id_rsa.pub
+file to each of the machines, and then append it to the authorized_keys
+file, as shown above.
+
+If you specified a password when running ssh-keygen, you will need
+to run ssh-agent on the master machine.  One way to do this is:
+
+    % eval `ssh-agent -s`
+
+or for a csh-compatible shell:
+
+    % eval `ssh-agent -c`
+
+and then execute the ssh-add command to add your RSA identity to the
+agent:
+
+    % ssh-add
+    Enter passphrase for /home/user/.ssh/id_rsa:
+
+If you didn't use a password for your private key, you don't need an
+ssh-agent.  For better security, we recommend using a password.
+
+You can now test your configuration by trying to executing the hostname
+command on your local machine and on each of the worker machines:
+
+    % ssh localhost hostname
+    headnode.example.com
+    % ssh node1 hostname
+    node1.example.com
+
+If everything is setup correctly, you will not be asked for a password,
+and the hostname will be printed.
+
+
+Web Launch Mechanism
+--------------------
+The web launch mechanism allows you to start up workers on different
+machines manually, without the need to remote execution programs such as
+ssh or rsh.  This is obviously more work, but may be necessary for
+machines that don't have ssh installed, such as Windows machines.
+
+    1. Create a sleigh, specifying web launch: 		
+       > s = sleigh(launch='web')
+       The sleigh function does not return until it gets a signal that
+       all workers have started and are ready to accept jobs;
+    2. Login to a remote machine;
+    3. Start an R session;
+    4. Open a web browser and point it to http://server_hostname:8766,
+       where server_hostname is the name of the machine running the NWS
+       server;
+    5. Click on the appropriate Sleigh workspace, then the 'runMe'
+       variable, and then select its value;
+    6. Copy the value of the 'runMe' variable into the R session, and
+       execute it as a command;
+    7. Repeat steps 2-6 for each target worker machine;
+    8. Finally, delete the 'DeleteMeWhenAllWorkersStarted' variable from
+       the Sleigh workspace using the web interface.  This signals the
+       Sleigh master that all the workers have been started and are
+       ready to accept work.
+
+
+Other Launch Mechanisms
+-----------------------
+Sleigh also supports rsh and LSF to start remote workers.  For more
+information on the launch mechanisms supported by Sleigh, simply type
+the following in an R session after the nws package is loaded:
+
+    > ?sshcmd
+    > ?rshcmd
+    > ?lsfcmd
+
+
+Now you're ready to submit tasks to the worker using eachWorker and
+eachElem.  For more examples, see the demo and examples/sleigh
+directories.

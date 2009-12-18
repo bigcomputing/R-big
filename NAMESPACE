@@ -1,0 +1,37 @@
+exportClasses(nwsServer, netWorkSpace, sleigh, sleighPending, serverInfo, managedServerInfo)
+
+# netWorkSpace class
+exportMethods(nwsClose, nwsDeclare, nwsDeleteVar,
+              nwsFetch, nwsFetchTry, nwsFind, nwsFindTry,
+              nwsFetchFile, nwsFetchTryFile, nwsFindFile, nwsFindTryFile,
+              nwsIFetch, nwsIFetchTry, nwsIFind, nwsIFindTry,
+              nwsListVars, nwsStore, nwsStoreFile, nwsWsName, nwsVariable,
+              nwsServerObject)
+
+# nwsServer class
+exportMethods(nwsListWss, nwsMktempWs, nwsOpenWs,
+              nwsUseWs, nwsDeleteWs)
+
+# sleigh class
+exportMethods(eachWorker, eachElem, stopSleigh, rankCount, workerCount,
+              netWorkSpaceObject, status, export, unexport, workerInfo,
+              connect, userNws)
+
+# netWorkSpace, nwsServer, and sleigh classes
+exportMethods(view)
+
+# sleighPending class
+exportMethods(checkSleigh, waitSleigh)
+
+# serverInfo classes
+exportMethods(nwsPort, nwsHost, nwsIsRunning, nwsServerInfoStop, nwsWebPort)
+
+# misc functions, etc
+export(nwsServer, netWorkSpace, launch, cmdLaunch, sshcmd, sshforwardcmd,
+       lsfcmd, rshcmd, ccscmd, rwincmd, envcmd, scriptcmd, sleigh, sleighPro, workerLoop,
+       initialize, lsfSleigh, isClosure, defaultSleighOptions, nodeSleighOptions,
+       nwsPkgInfo, batchNodeList, sgeNodeList, lsfNodeList, pbsNodeList,
+       serverInfo, getServer, setServer, getSleigh, setSleigh,
+       managedServerInfo, defaultManagedServerInfoOptions,
+       defaultServerInfoOptions, defaultNetWorkSpaceOptions,
+       defaultNwsServerOptions, close.sleigh, close.nwsServer)

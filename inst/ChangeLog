@@ -1,0 +1,193 @@
+nws 1.3.1
+---------
+1. Allow nwsListWss and nwsListVars to return result in data frame or string.
+2. Split sleigh.R to several files
+   - move sleighPending class to sleighPending.R
+   - move internal functions to sleigh.internal.R
+   - move workerLoop to workerLoop.R
+   - move sshcmd, rshcmd, and lsfcmd to cmdLaunchOptions.R
+3. Add launch.R which includes different ways to launch remote workers
+   - web launch
+   - cmd launch, which launches workers from worker script
+4. Add DEBUG flag to eachElem and eachWorker
+5. Add verbose mode to sleigh
+6. Allow user to specify chunkSize of each task in eachElem invocation
+7. Switched from make.socket to socketConnection to allow binary data
+to be sent to the NWS server.
+8  Changed serialization of objects from ascii to binary.
+9. Added new example programs.
+10. Add local launch mechanism, and made it the default launch method.
+11. Fixed a problem where loading a saved R workspace fails if a sleigh
+object was in the workspace.
+
+nws 1.3.2
+---------
+1. Added support for service launch mechanism.
+2. Properly quoted the commands to start the workers in addWorker function.
+3. Added logDir option to sleigh constructor.
+4. Changed the default working directory of workers to be the same as the
+master.
+5. Changed the rules for the "cmd launch functions" to return vectors rather
+than strings.
+6. Greatly improved the support for Windows in sleigh, including the
+addition of Windows services for the executing the server, babelfish,
+and sleigh workers.
+
+nws 1.3.3
+---------
+1. Added nwsServer and netWorkSpace convenience functions.
+2. Added sleighPro convenience function.
+3. Fix rshcmd function to conform to Windows rsh cmd, and 
+   add '-n' option to redirect standard input to /dev/null. 
+
+nws 1.3.4
+---------
+1. Modified nwsStore to support the R 2.4 version of serialize.
+2. Added prototype arguments to various setClass calls to prevent R from
+instantiating default nwsServer objects which caused warning message during
+build/installation.
+
+nws 1.3.5
+---------
+1. Added some underlying support needed for fault tolerant versions of
+   the eachElem and eachWorker sleigh methods.
+
+nws 1.3.6
+---------
+1. Modified the RNWSSleighWorker scripts to use the value of the sleigh
+   scriptDir option to help them find the nws package on the worker machines.
+2. Modified workerLoop.R to print out more information in less space in
+   the "worker info" variable.  Included the location of the log file
+   and the version of R.
+3. Fixed use of the export command in RNWSSleighWorker.sh that made it
+   incompatible with some shells other than bash and zsh.
+
+nws 1.4.0
+---------
+1. Added support for iterated operations.
+2. Modified workerLoop.R to log errors to the sleigh workspace, in
+   addition to the log file.
+
+nws 1.5.0
+---------
+1. Fixed a bug in RNWSSleighWorker.py that causes a sleigh to fail.
+   This is particularly a problem on Windows, where RNWSSleighWorker.py
+   is the default worker script.
+2. Created a workspace when constructing a sleigh that is reserved for
+   the user.  The worker functions can access it via the SleighUserNws
+   variable.
+3. Added nwsStoreFile, nwsFindFile, nwsFileTryFile, nwsFetchFile, and
+   nwsFetchTryFile methods to the netWorkSpace class.
+4. Added error checking for optional arguments passed to sleigh,
+   netWorkSpace, nwsOpenWs, and nwsUseWs.  That can help detect spelling
+   errors that might otherwise go undetected.
+5. Added the "closure" option to eachWorker and eachElem.  If it is set
+   to FALSE, the enclosing environment will be removed, which may
+   prevent transferring a huge amount of data in the serialized function
+   of every task object.
+6. Added warnings to eachWorker and eachElem if the worker function
+   looks like a closure, but the "closure" option hasn't been explicitly
+   specified.
+7. Added status method to sleigh class.
+8. Included the lsfSleigh launch function in the standard version of nws.
+9. Removed sleighPro class, since all its functionality is in the
+   standard sleigh class.
+10. Included a new parallel kmeans sleigh example.
+11. Added defaultSleighOptions environment that can be used to change
+   the default options when constructing sleigh objects.
+
+nws 1.5.1
+---------
+1. Added a stdout/stderr redirection to RNWSSleighWorker.sh to avoid
+   getting error messages on the user's console when calling stopSleigh.
+2. Added parallel random forest examples/benchmarks.
+3. Improved some of the examples to be useful for benchmarking.
+
+nws 1.6.0
+---------
+1. The "Pro" version of nws is renamed to nwsPro.
+2. Added export and unexport methods to the sleigh class.
+
+nws 1.6.1
+---------
+1. Added workerInfo method to sleigh class.
+2. Changed default value of 'user' parameter for sleigh constructor to NULL.
+   When using ssh, this means the '-l' option isn't used, which allows the
+   ssh config file to be used to use host specific users, which is very useful
+   in a heterogeneous environment.
+3. Modified the values in the "worker info" variable in the sleigh workspace
+   to include the nws version string.
+4. Reduced volume of output to the log file in verbose mode.
+
+nws 1.6.2
+---------
+1. Removed sleigh dependency on nwsserver >= 1.4.0.  The workerInfo and
+   export methods won't work, but the workers should not die if using an
+   older server.
+2. Changed RNWSSleighWorker.py to make the worker process a process group
+   leader (on Unix) to aid in kill any forked child processes.
+3. Fixed bug in RNWSSleighWorker.py caused by adding '%in%' into a string
+   that was processed using the '%' operator.  This bug was introduced in
+   version 1.6.0, but would only be a problem on Windows (by default).
+4. Fixed bug in SleighWorkerWrapper.sh that occurred if using some shells
+   other than bash and zsh.
+5. Exported the close method as a method, rather than a function in the
+   NAMESPACE file.
+
+nws 1.6.3
+---------
+1. Miscellaneous example improvements.
+2. Added pportfolio as a demo.
+3. The fix to SleighWorkerWrapper.sh in 1.6.2 still doesn't work in
+   cases where zsh is invoked as /bin/sh, because it seems to emulate
+   older Bourne shells, but the SHELL environment variable is still
+   "/bin/zsh".  I gave up trying to close descriptors 10-99.
+4. Fixed bug in nwsFindTryFile.
+5. Added sshforwardcmd function for tunneling the sleigh workers'
+   connections to the nws server through ssh.
+
+nws 1.7.x.0
+-----------
+1. The "Pro" version of nws is renamed back to nws.
+2. Fixed bug in the "File" methods (nwsFetchFile, etc).
+3. Fixed some potential bugs when storing and fetching binary data.
+4. Added new functions batchNodeList, sgeNodeList, lsfNodeList, and
+   pbsNodeList to provide better support for running sleigh programs
+   as batch jobs under SGE, LSF, and PBS.
+5. Modified the nws store operations to not serialize raw vectors.
+   In this respect, they are treated like strings, but are distinguished
+   from strings.
+6. Enhanced babelfish support.
+7. Added "rwin" function for launching remote sleigh workers on Windows.
+
+nws 1.8.x.0
+-----------
+1. Added support for creating heterogeneous sleighs.  This is done via the
+   new nodeSleighOptions environment.
+2. Added the view method to the sleigh, nwsServer, and netWorkSpace classes.
+   This displays the nws server's web interface in a browser.
+3. Fixed a bug that could cause eachWorker to hang if a particular error
+   occurred in a previous call to eachWorker.
+4. Removed the sleigh simpleQuote option, but added a mechanism to allow
+   the launch function to specify the quoting mechanism for each command.
+   This is only applicable to Windows.
+5. Improved various error messages.
+
+
+nws 2.0.x.0
+-----------
+1. Added support for the new sleigh workspace server plugins.
+   This has a number of benefits, depending on what plugins your server has
+   installed.
+2. Added support for automatically starting an nws server.
+3. Improved the efficiency of fetching/finding serialized objects.
+4. Getting the location of the Python interpreter in the registry on Windows.
+5. Added support for distributed random number generation using SPRNG.
+6. Changed default value of scriptName to use Python worker script.
+7. Changed default value of scriptExec to use scriptcmd.
+8. Modified sleigh worker startup to allow multiple workers per sentinel.
+9. Changed default value of showDataFrame to TRUE in nwsListVars and nwsListWss.
+10. Allow multiple eachElem/eachWorkers jobs with blocking=FALSE when using
+   the sleigh workspace plugin.
+11. Added setSleigh and getSleigh functions that used to be part of the
+   sleighMan package.
