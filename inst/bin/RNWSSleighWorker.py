@@ -65,7 +65,7 @@ local({
     if (basename(scriptDir) == 'bin') {
         nwsDir <- dirname(scriptDir)
         nwsPkg <- basename(nwsDir)
-        if (nwsPkg == 'nws') {
+        if (nwsPkg == 'Rbig') {
             libDir <- dirname(nwsDir)
             oldPaths <- .libPaths()
             newPaths <- c(libDir, oldPaths)
@@ -75,7 +75,7 @@ local({
     }
 })
 
-library(nws)
+library(Rbig)
 cmdLaunch(%s)
 ''' % verbose
     fd, tmpname = tempfile.mkstemp(suffix='.R', prefix='__nws',
